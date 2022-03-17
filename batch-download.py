@@ -25,10 +25,8 @@ Arguments:
 --overwrite: 'yes' if existing files should be overwritten.
 
 Examples:
-python "$pydir"/batch-download.py --file 'data/list.txt' --spaces yes --dest 'data/imgs'
-python "$pydir"/batch-download.py --file 'data/list.txt' --wiki bulba --dest 'data/imgs'
-python "$pydir"/batch-download.py --file 'data/home-de.txt' --wiki pokewiki --dest 'data/imgs'
-python "$pydir"/batch-download.py --wiki wikipedia --dest 'Banteay Srei'
+python batch-download.py --file list.txt --spaces yes --dest '~/downloads'
+python batch-download.py --wiki wikipedia --dest 'Banteay Srei'
 '''
 # download a file and return True/False if successful/failed
 def download(url, destfile):
