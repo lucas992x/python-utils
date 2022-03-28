@@ -1,0 +1,4 @@
+colour,color
+Colour,Color
+favourite,favorite
+Favourite,Favorite
