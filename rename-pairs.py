@@ -13,7 +13,6 @@ match the start of a word; 'right' if it should match the end of a word.
 Example:
 python rename-pairs.py --dir ~/downloads --pairsfile rename-pairs-sample.txt --word yes
 '''
-
 # parse arguments
 parser = argparse.ArgumentParser()
 parser.add_argument('--dir', default = '')
