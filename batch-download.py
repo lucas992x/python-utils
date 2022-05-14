@@ -35,8 +35,6 @@ def download(url, destfile):
     try:
         #wget.download(url, destfile)
         os.system(f'wget {url} -O "{destfile}"')
-        countprint = count.zfill(numdigits)
-        #print(f' File {count} of {tot} processed')
         downloaded = True
     except:
         downloaded = False
@@ -119,27 +117,27 @@ if __name__ == '__main__':
                     destfile = destfile.replace('_', ' ')
         # add path to dest file and output file
         destfile = os.path.join(args.dest, destfile)
-        outfile = os.path.join(args.dest, 'errors.txt')
+        errorsfile = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'batch-download-errors.txt')
         # check if dest file already exists
         if os.path.isfile(destfile):
             if args.overwrite != 'yes':
-                if not os.path.isfile(outfile):
+                if not os.path.isfile(errorsfile):
                     mode = 'w'
                 else:
                     mode = 'a'
-                with open(outfile, mode) as file:
+                with open(errorsfile, mode) as file:
                     file.write(f'{url} skipped\n')
                 continue
         # proceed to download
-        trydownload(url, destfile, args.retry)
+        downloaded = trydownload(url, destfile, args.retry)
         # check if download was successful or failed
         if downloaded == False:
             print(f' File {count} of {tot} failed to download')
-            if not os.path.isfile(outfile):
+            if not os.path.isfile(errorsfile):
                 mode = 'w'
             else:
                 mode = 'a'
-            with open(outfile, mode) as file:
+            with open(errorsfile, mode) as file:
                 file.write(f'{url} failed\n')
         else:
             print(f' File {count} of {tot} downloaded successfully')
