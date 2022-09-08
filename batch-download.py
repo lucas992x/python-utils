@@ -89,10 +89,11 @@ if __name__ == '__main__':
     else:
         # default wiki list
         getbaseurl = { 'wikipedia': 'https://upload.wikimedia.org/wikipedia/commons' }
-    # check that wiki is recognized
-    baseurl = getbaseurl.get(args.wiki, '')
-    if not baseurl:
-        sys.exit(f'Error: wiki "{args.wiki}" not recognized!')
+    # check that wiki is recognized if provided
+    if args.wiki:
+        baseurl = getbaseurl.get(args.wiki, '')
+        if not baseurl:
+            sys.exit(f'Error: wiki "{args.wiki}" not recognized!')
     # loop over files to download them
     for line in lines:
         count += 1
