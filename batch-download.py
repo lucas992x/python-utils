@@ -104,9 +104,9 @@ if __name__ == '__main__':
             else:
                 file = line
                 destfile = line
-            file = file.replace(' ', '_').replace('?', '%3F')
+            file = file.replace(' ', '_')
             md5 = hashlib.md5(file.encode()).hexdigest()
-            url = '/'.join([baseurl, md5[0], md5[0:2], file])
+            url = '/'.join([baseurl, md5[0], md5[0:2], urllib.parse.quote(file)])
         else:
             # set dest file name
             if args.sep in line:
