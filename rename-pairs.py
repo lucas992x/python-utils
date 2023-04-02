@@ -11,7 +11,7 @@ separated by comma (or specified character). Arguments:
 match the start of a word; 'right' if it should match the end of a word.
 
 Example:
-python rename-pairs.py --dir ~/downloads --pairsfile rename-pairs-sample.txt --word yes
+python rename-pairs.py --dir ~/downloads --pairsfile rename-pairs.txt.sample --word yes
 '''
 # parse arguments
 parser = argparse.ArgumentParser()
