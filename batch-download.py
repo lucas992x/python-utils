@@ -1,5 +1,6 @@
-import argparse, os, os.path, sys, hashlib, urllib.parse, wget
-'''
+import argparse, os, os.path, sys, hashlib, urllib.parse  # , wget
+
+"""
 This script downloads a list of files reading them from text file, where each
 line should be structured as following:
 - If line contains only an URL, file is downloaded keeping its name.
@@ -27,13 +28,15 @@ Arguments:
 Examples:
 python batch-download.py --file list.txt --spaces yes --dest ~/downloads
 python batch-download.py --wiki wikipedia --dest 'Banteay Srei'
-'''
+"""
+
+
 # download a file and return True/False if successful/failed
 def download(url, destfile):
     # sometimes wget.download works better, sometimes wget from console is
     # better, so I often switch lol
     try:
-        #wget.download(url, destfile)
+        # wget.download(url, destfile)
         os.system(f'wget {url} -O "{destfile}"')
         downloaded = True
     except:
@@ -45,8 +48,9 @@ def download(url, destfile):
         downloaded = False
     return downloaded
 
+
 # manage download and retries
-def trydownload(url, destfile, maxretries = 2):
+def trydownload(url, destfile, maxretries=2):
     downloaded = False
     count = 0
     while downloaded == False and count <= maxretries:
@@ -54,18 +58,19 @@ def trydownload(url, destfile, maxretries = 2):
         count += 1
     return downloaded
 
+
 # parse arguments
 parser = argparse.ArgumentParser()
-parser.add_argument('--file', default = 'files.txt')
-parser.add_argument('--sep', default = ',')
-parser.add_argument('--spaces', default = 'no')
-parser.add_argument('--wiki', default = '')
-parser.add_argument('--dest', default = 'downloads')
-parser.add_argument('--retry', default = 4, type = int)
-parser.add_argument('--overwrite', default = 'no')
+parser.add_argument("--file", default="files.txt")
+parser.add_argument("--sep", default=",")
+parser.add_argument("--spaces", default="no")
+parser.add_argument("--wiki", default="")
+parser.add_argument("--dest", default="downloads")
+parser.add_argument("--retry", default=4, type=int)
+parser.add_argument("--overwrite", default="no")
 args = parser.parse_args()
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # check that input file exists
     if not os.path.isfile(args.file):
         sys.exit(f'Error: file "{args.file}" not found!')
@@ -73,25 +78,27 @@ if __name__ == '__main__':
     if not os.path.isdir(args.dest):
         os.mkdir(args.dest)
     # read from input file
-    with open(args.file, 'r') as file:
+    with open(args.file, "r") as file:
         lines = file.read().splitlines()
     tot = len(lines)
     count = 0
-    numdigits = len(str(tot)) # used to print output
+    numdigits = len(str(tot))  # used to print output
     # search for text file with wiki URLs
-    wikisfile = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'batch-download-wikis.txt')
+    wikisfile = os.path.join(
+        os.path.abspath(os.path.dirname(__file__)), "batch-download-wikis.txt"
+    )
     if os.path.isfile(wikisfile):
         getbaseurl = {}
-        with open(wikisfile, 'r') as file:
+        with open(wikisfile, "r") as file:
             for line in file:
-                url, wiki = line.strip().split(' ')
+                url, wiki = line.strip().split(" ")
                 getbaseurl.update({wiki: url})
     else:
         # default wiki list
-        getbaseurl = { 'wikipedia': 'https://upload.wikimedia.org/wikipedia/commons' }
+        getbaseurl = {"wikipedia": "https://upload.wikimedia.org/wikipedia/commons"}
     # check that wiki is recognized if provided
     if args.wiki:
-        baseurl = getbaseurl.get(args.wiki, '')
+        baseurl = getbaseurl.get(args.wiki, "")
         if not baseurl:
             sys.exit(f'Error: wiki "{args.wiki}" not recognized!')
     # loop over files to download them
@@ -104,41 +111,43 @@ if __name__ == '__main__':
             else:
                 file = line
                 destfile = line
-            file = file.replace(' ', '_')
+            file = file.replace(" ", "_")
             md5 = hashlib.md5(file.encode()).hexdigest()
-            url = '/'.join([baseurl, md5[0], md5[0:2], urllib.parse.quote(file)])
+            url = "/".join([baseurl, md5[0], md5[0:2], urllib.parse.quote(file)])
         else:
             # set dest file name
             if args.sep in line:
                 url, destfile = line.split(args.sep)
             else:
                 url = line
-                destfile = urllib.parse.unquote(url.split('/')[-1])
-                if args.spaces == 'yes':
-                    destfile = destfile.replace('_', ' ')
+                destfile = urllib.parse.unquote(url.split("/")[-1])
+                if args.spaces == "yes":
+                    destfile = destfile.replace("_", " ")
         # add path to dest file and output file
         destfile = os.path.join(args.dest, destfile)
-        errorsfile = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'batch-download-errors.txt')
+        errorsfile = os.path.join(
+            os.path.abspath(os.path.dirname(__file__)), "batch-download-errors.txt"
+        )
         # check if dest file already exists
         if os.path.isfile(destfile):
-            if args.overwrite != 'yes':
+            if args.overwrite != "yes":
                 if not os.path.isfile(errorsfile):
-                    mode = 'w'
+                    mode = "w"
                 else:
-                    mode = 'a'
+                    mode = "a"
                 with open(errorsfile, mode) as file:
-                    file.write(f'{url} skipped\n')
+                    file.write(f"{url} skipped\n")
                 continue
         # proceed to download
         downloaded = trydownload(url, destfile, args.retry)
         # check if download was successful or failed
         if downloaded == False:
-            print(f' File {count} of {tot} failed to download')
+            print(f" File {count} of {tot} failed to download")
             if not os.path.isfile(errorsfile):
-                mode = 'w'
+                mode = "w"
             else:
-                mode = 'a'
+                mode = "a"
             with open(errorsfile, mode) as file:
-                file.write(f'{url} failed\n')
+                file.write(f"{url} failed\n")
         else:
-            print(f' File {count} of {tot} downloaded successfully')
+            print(f" File {count} of {tot} downloaded successfully")
