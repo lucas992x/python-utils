@@ -3,3 +3,4 @@ This repository contains some utilities written in Python, specifically:
 - `count-days.py` can add/subtract days to a date or compute the difference in days between two dates.
 - `fix-wsl.py` edits two files in Pywikibot repository to make it work with Windows Subsystem for Linux.
 - `rename-pairs.py` renames all files in given directory reading replacements from a text file.
+- `rename-photos.py` renames all photos in given directory basing on taken timestamp.
